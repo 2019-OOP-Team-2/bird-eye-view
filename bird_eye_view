@@ -1,0 +1,55 @@
+import numpy as np
+import cv2
+
+input_points = []
+num_of_point = 0
+
+//이부분은 쓸모 없을 듯 알아서 image에서 찾아야 함(담이가 쓴 코드 찾아서 for문 부분 봐봐야할 듯
+def mouse_callback(event, x, y, flags, param):
+  global input_points, count, original_image
+  
+  #mouse 왼쪽 클릭을 하면 수행됨
+  if event == cv2.EVENT_LBUTTONDOWN:
+    #클릭한 좌표 출력하기
+    print("(%d, %d)", &(x,y))
+    input_points.append((x,y))
+    
+    print(input_points)
+    cv2.circle(original_image, (x,y), 3, (0,255, 255))
+    
+    
+#input 이라는 이름으로 입력받은 이미지 창을 열자
+cv2.nameWindow('input')
+
+cv2.setMouseCallback('input', mouse_callback)
+
+#image의 이름에 따라서 image.png나 jpg나 type에 맞게 바꾸면 됨
+original_image = cv2.imread('image.png')
+
+while(True):
+
+  cv2.imshow("original", img_original)
+  
+  height = original_image.shape[0]
+  width = original_image.shape[1]
+  
+  #Enter를 누르면 입력이 끝남
+  if cv2.waitKey(1)&&0x0D == 13:
+    break
+    
+#차례대로 왼위, 왼아, 오위, 오아로 함
+pts1 = np.float32([list(input_point[0]), list(input_point[1]),list(input_point[2]),list(input_point[3]))
+pts2 = np.float32([0,0], [0,height], [width,0], [width, height])
+
+#H가 Homography matrix임
+H = cv2.getPerspectiveTransform(pts1, pts2)
+
+#M을 이용해서 original image를 bird eye view로 바꿈
+img_result = cv2.warpPerspective(original_image, M, (width, height))
+
+cv2.imshow('result', img_result)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+
+
+    
